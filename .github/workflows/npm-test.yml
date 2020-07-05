@@ -27,12 +27,12 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: test-report
-          path: /home/runner/work/test/test/mochawesome-report
+          path: mochawesome-report
       - name: Read package.json
         id: package
         uses: juliangruber/read-file-action@v1
         with:
-          path: /home/runner/work/test/test/mochawesome-report/mochawesome.json
+          path: mochawesome-report/mochawesome.json
       - name: Webhook
         uses: joelwmale/webhook-action@master
         env:
