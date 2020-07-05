@@ -1,0 +1,40 @@
+# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
+# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+
+name: Node.js Package
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: npm ci
+      - run: npm test
+      - name: Archive test results
+        uses: actions/upload-artifact@v1
+        with:
+          name: test-report
+          path: /home/runner/work/test/test/mochawesome-report
+      - name: Read package.json
+        id: package
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: /home/runner/work/test/test/mochawesome-report/mochawesome.json
+      - name: Webhook
+        uses: joelwmale/webhook-action@master
+        env:
+          WEBHOOK_URL: 'https://signalrchatapp.herokuapp.com/report/index/${{ github.sha }}'
+          data: ${{ steps.package.outputs.content }}
