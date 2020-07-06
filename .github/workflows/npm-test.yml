@@ -23,6 +23,7 @@ jobs:
           node-version: 12
       - run: npm ci
       - run: npm test
+        continue-on-error: true
       - name: Archive test results
         uses: actions/upload-artifact@v1
         with:
